@@ -7,9 +7,8 @@ def main():
         
         ## Scrape data
         browser = p.chromium.launch(headless=False) # or firefox or webkit ## headless False to see the browser
-        context = browser.new_context()
-        page = context.new_page()
-        page.goto("https://coinmarketcap.com", timeout=20000)
+        page = browser.new_page()
+        page.goto("https://coinmarketcap.com", timeout=30000)
         
         # Scrolling down to reveal ungenerated content
         for i in range(5):
@@ -30,12 +29,16 @@ def main():
             coin_dict['Name'] = tds[2].query_selector("//p[@color='text']").inner_text()
             coin_dict['Symbol'] = tds[2].query_selector("//p[@color='text3']").inner_text()
             coin_dict['Price'] = float(tds[3].inner_text().replace("$", "").replace(",", ""))
+            coin_dict['Market_Cap_USD'] = int(tds[7].inner_text().replace("$", "").replace(",", ""))
+            coin_dict['Volume'] = int(tds[8].query_selector('//p[@color="text"]').inner_text().replace("$", "").replace(",", ""))
             
             master_list.append(coin_dict)
             
-            
-
-        print(master_list)
+        # tuples
+        list_of_tuples = [tuple(dic.values()) for dic in master_list]
+        print(list_of_tuples)
+        # for element in master_list:
+        #     print (element)
         ## Connect to database
         
         browser.close()  # End by closing the browser
