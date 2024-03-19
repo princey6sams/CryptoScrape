@@ -1,14 +1,12 @@
 from playwright.sync_api import sync_playwright
-import psycopg2
-from psycopg2.extras import execute_values
 
-def main():
+def scrapeData():
     with sync_playwright() as p:
         
         ## Scrape data
-        browser = p.chromium.launch(headless=False) # or firefox or webkit ## headless False to see the browser
+        browser = p.chromium.launch(headless=True) # or firefox or webkit ## headless False to see the browser
         page = browser.new_page()
-        page.goto("https://coinmarketcap.com", timeout=30000)
+        page.goto("https://coinmarketcap.com", timeout=100000)
         
         # Scrolling down to reveal ungenerated content
         for i in range(5):
@@ -34,14 +32,9 @@ def main():
             
             master_list.append(coin_dict)
             
-        # tuples
-        list_of_tuples = [tuple(dic.values()) for dic in master_list]
-        print(list_of_tuples)
-        # for element in master_list:
-        #     print (element)
-        ## Connect to database
-        
-        browser.close()  # End by closing the browser
+        browser.close()
+    
+    return master_list
 
 if __name__ == "__main__":
-    main()
+    scrapeData()
